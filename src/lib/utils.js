@@ -30,7 +30,6 @@ exports.destoryCookies = (ctx, info) => {
   });
 }
 
-exports.catchError = (ctx, err) => {
+exports.catchError = (err) => {
   console.log(err);         //  打印错误信息
-  ctx.resError = err;       //  返回错位信息
 }

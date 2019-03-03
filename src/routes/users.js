@@ -65,7 +65,6 @@ let loginUser = async (ctx, next) => {
     await User.findOne({
       where, attributes
     }).then((res) => {
-      console.log(!res);
       if (res === null) {
         ctx.response.status = 206;
         ctx.response.body = {
