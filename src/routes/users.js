@@ -2,6 +2,7 @@ const model = require('../models');
 const { users:User } = model;
 const _ = require('lodash');
 const utils = require('../lib/utils');
+const { userAttributes } = require('../config/default');
 
 const catchError = (ctx, err) => {
   console.log(err);
@@ -113,8 +114,24 @@ const logout = async (ctx, next) => {
   }
 }
 
+const getUserInfo = async (ctx, next) => {
+  const { userId } = ctx.request.query;
+  await User.findOne({
+    where: {
+      id: userId,
+    },
+    attributes: userAttributes,
+  }).then((res) => {
+    ctx.response.body = {
+      status: 200,
+      content: res,
+    };
+  });
+}
+
 module.exports = {
   'GET /users/list' : list,
+  'GET /users': getUserInfo,
   'GET /users/checkLogin': checkLogin,
   'POST /users/create': createUser,
   'POST /users/login': loginUser,

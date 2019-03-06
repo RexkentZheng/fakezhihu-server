@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     targetId: {
       type: DataTypes.INTEGER,
     },
+    targetType: {
+      type: DataTypes.INTEGER,
+    },
     createdAt: {
       type: DataTypes.DATE,
     },

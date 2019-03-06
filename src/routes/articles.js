@@ -1,7 +1,34 @@
 const model = require('../models');
-const { articles:Article, users:User, status:Status } = model;
+const { articles:Article, status:Status, questions:Question } = model;
 const _ = require('lodash');
 const utils = require('../lib/utils');
+const {
+  userAttributes,
+  articleAttributes,
+  commentAttributes,
+} = require('../config/default')
+
+const articleInclude = [{
+  model: model.users,
+  attributes: userAttributes,
+  as: 'author'
+}, {
+  model: model.status,
+  as: 'status',
+  where: {
+    targetType: 0,
+  },
+}, {
+  model: model.comments,
+  attributes: commentAttributes,
+  as: 'comment',
+  required: false,
+  include: [{
+    model: model.users,
+    attributes: userAttributes,
+    as: 'author'
+  }]
+}];
 
 const creatorArticles = async (ctx, next) => {
   const { creatorId } = ctx.query;
@@ -11,23 +38,36 @@ const creatorArticles = async (ctx, next) => {
   //  此处连表查询有着比较复杂的问题，belongsTo和hasOne的区别就是一个会添加
   const include = [{
     model: model.users,
+    attributes: userAttributes,
     as: 'author'
   }, {
-    model: Status,
-    as: 'status'
+    model: model.status,
+    as: 'status',
+    where: {
+      targetType: 0,
+    },
   }, {
     model: model.comments,
+    attributes: commentAttributes,
     as: 'comment',
+    required: false,
+    where: {
+      targetType: 0,
+    },
     include: [{
       model: model.users,
+      attributes: userAttributes,
       as: 'author'
     }]
   }];
-
   try {
-    const list = await Article.findAll({where, include});
-    ctx.response.status = 200;
-    ctx.response.body = list;
+    const list = await Article.findAll({
+      where, include, attributes: articleAttributes
+    });
+    ctx.response.body = {
+      status: 200,
+      list,
+    };
   } catch (error) {
     utils.catchError(error);
   }
@@ -49,7 +89,8 @@ const creatArticles = async (ctx, next) => {
         voteDown: '[]',
         favorite: '[]',
         thanks: '[]',
-        targetId: res.dataValues.id
+        targetId: res.dataValues.id,
+        targetType: 0,
       }).then((res) => {
         ctx.response.status = 201;
         ctx.response.body = {
@@ -74,10 +115,17 @@ const deleteArticles = async (ctx, next) => {
       await Article.destroy({
         where
       }).then((res) => {
-        ctx.response.body = {
-          status: 202,
-          msg: '删除成功',
-        };
+        return Status.destroy({
+          where: {
+            targetId: articleId,
+            targetType: 0,
+          }
+        }).then((response) => {
+          ctx.response.body = {
+            status: 202,
+            msg: '删除成功',
+          };
+        });
       });
     } else {
       ctx.response.body = {
@@ -95,10 +143,33 @@ const getArticle = async (ctx, next) => {
   const where = {
     id: articleId
   };
-  const attributes = ['title', 'content', 'cover'];
+  const include = [{
+    model: model.users,
+    attributes: userAttributes,
+    as: 'author'
+  }, {
+    model: model.status,
+    as: 'status',
+    where: {
+      targetType: 0,
+    },
+  }, {
+    model: model.comments,
+    as: 'comment',
+    attributes: commentAttributes,
+    where: {
+      targetType: 0,
+    },
+    required: false,      //  可以为空值，否则会互相过滤导致没有值返回
+    include: [{
+      model: model.users,
+      attributes: userAttributes,
+      as: 'author'
+    }]
+  }];
   try {
     await Article.findOne({
-      where, attributes
+      where, include, attributes: articleAttributes
     }).then((res) => {
       ctx.response.body = {
         status: 200,
@@ -108,6 +179,25 @@ const getArticle = async (ctx, next) => {
   } catch (error) {
     utils.catchError(error);
     ctx.resError = error;
+  }
+}
+
+const getArticleList = async (ctx, next) => {
+  try {
+    const order = [
+      ['id', 'DESC'],
+    ];
+    const limit = 10;
+    const articleList = await Article.findAll({
+      order, limit, include: articleInclude
+    });
+    ctx.response.body = {
+      status: 200,
+      list: articleList,
+    }
+  } catch (error) {
+    console.log(error);
+    utils.catchError(ctx, error);
   }
 }
 
@@ -148,6 +238,7 @@ const updateArticles = async (ctx, next) => {
 module.exports = {
   'GET /articles/creator': creatorArticles,
   'GET /articles': getArticle,
+  'GET /articles/list': getArticleList,
   'POST /articles': creatArticles,
   'DELETE /articles': deleteArticles,
   'PUT /articles': updateArticles
