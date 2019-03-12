@@ -11,10 +11,6 @@ const routes = require('./src/server/routes');
 // error handler
 onerror(app)
 
-// middlewares
-// app.use(bodyparser({                             //  使用koaBody之后就不能使用此插件，否则会报错
-//   enableTypes:['json', 'form', 'text']
-// }))
 app.use(koaBody({
   multipart: true,
   strict  : false,    //如果为true，不解析GET,HEAD,DELETE请求

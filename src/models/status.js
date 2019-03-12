@@ -30,8 +30,5 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
     },
   });
-  // Status.associate = (models) => {
-  //   Status.hasOne(models.articles, { foreignKey: 'targetId', as: 'status' });
-  // }
   return Status;
 };

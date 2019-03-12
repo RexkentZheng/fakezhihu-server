@@ -1,5 +1,5 @@
 const model = require('../models');
-const { articles:Article, status:Status, questions:Question } = model;
+const { articles:Article, status:Status } = model;
 const _ = require('lodash');
 const utils = require('../lib/utils');
 const {
@@ -23,6 +23,10 @@ const articleInclude = [{
   attributes: commentAttributes,
   as: 'comment',
   required: false,
+  where: {
+    targetType: 0,
+  },
+  required: false,
   include: [{
     model: model.users,
     attributes: userAttributes,
@@ -35,34 +39,11 @@ const creatorArticles = async (ctx, next) => {
   const where = {
     creatorId
   };
-  //  此处连表查询有着比较复杂的问题，belongsTo和hasOne的区别就是一个会添加
-  const include = [{
-    model: model.users,
-    attributes: userAttributes,
-    as: 'author'
-  }, {
-    model: model.status,
-    as: 'status',
-    where: {
-      targetType: 0,
-    },
-  }, {
-    model: model.comments,
-    attributes: commentAttributes,
-    as: 'comment',
-    required: false,
-    where: {
-      targetType: 0,
-    },
-    include: [{
-      model: model.users,
-      attributes: userAttributes,
-      as: 'author'
-    }]
-  }];
   try {
     const list = await Article.findAll({
-      where, include, attributes: articleAttributes
+      where,
+      include: articleInclude,
+      attributes: articleAttributes,
     });
     ctx.response.body = {
       status: 200,
@@ -143,33 +124,11 @@ const getArticle = async (ctx, next) => {
   const where = {
     id: articleId
   };
-  const include = [{
-    model: model.users,
-    attributes: userAttributes,
-    as: 'author'
-  }, {
-    model: model.status,
-    as: 'status',
-    where: {
-      targetType: 0,
-    },
-  }, {
-    model: model.comments,
-    as: 'comment',
-    attributes: commentAttributes,
-    where: {
-      targetType: 0,
-    },
-    required: false,      //  可以为空值，否则会互相过滤导致没有值返回
-    include: [{
-      model: model.users,
-      attributes: userAttributes,
-      as: 'author'
-    }]
-  }];
   try {
     await Article.findOne({
-      where, include, attributes: articleAttributes
+      where,
+      include: articleInclude,
+      attributes: articleAttributes
     }).then((res) => {
       ctx.response.body = {
         status: 200,
@@ -189,7 +148,10 @@ const getArticleList = async (ctx, next) => {
     ];
     const limit = 10;
     const articleList = await Article.findAll({
-      order, limit, include: articleInclude
+      order,
+      limit,
+      include: articleInclude,
+      attributes: articleAttributes,
     });
     ctx.response.body = {
       status: 200,
@@ -202,7 +164,14 @@ const getArticleList = async (ctx, next) => {
 }
 
 const updateArticles = async (ctx, next) => {
-  const { articleId, content, excerpt, title, imgUrl, userId } = ctx.request.body;
+  const { 
+    articleId,
+    content,
+    excerpt,
+    title,
+    imgUrl,
+    userId
+  } = ctx.request.body;
   const where = {
     id: articleId,
     creatorId: userId
@@ -219,7 +188,7 @@ const updateArticles = async (ctx, next) => {
         content,
         excerpt,
         title,
-        imgUrl
+        cover: imgUrl,
       }, {
         where
       }).then((res) => {

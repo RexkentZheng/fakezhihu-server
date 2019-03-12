@@ -9,7 +9,7 @@ const upload = async (ctx, next) => {
   let filePath = path.join(__dirname, '../../public/imgs') + `/${hash}.${file.name.split('.').pop()}`;  // 创建文件路径
   const upStream = fs.createWriteStream(filePath);  // 创建可写流
   reader.pipe(upStream);  // 可读流通过管道写入可写流
-  return ctx.body = {
+  ctx.body = {
     status: 201,
     url: filePath,
   };

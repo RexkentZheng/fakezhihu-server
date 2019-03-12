@@ -1,6 +1,5 @@
 const model = require('../models');
 const { questions:Question, answers:Answer, comments:Comment } = model;
-const _ = require('lodash');
 const utils = require('../lib/utils');
 const {
   userAttributes,
@@ -190,7 +189,7 @@ const updateQuestions = async (ctx, next) => {
       };
     } else {
       await Question.update({
-        content,
+        discription: content,
         excerpt,
         title,
       }, {
