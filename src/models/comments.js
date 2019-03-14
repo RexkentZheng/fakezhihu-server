@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   Comment.associate = (models) => {
     Comment.belongsTo(models.users, { foreignKey: 'creatorId', as: 'author' });
+    Comment.hasOne(models.status, { foreignKey: 'targetId', as: 'status' });
+    Comment.hasMany(models.comments, { foreignKey: 'targetId', as: 'comment' });
   }
   return Comment;
 };

@@ -1,11 +1,13 @@
 const model = require('../models');
-const { articles:Article, status:Status } = model;
+const { articles:Article, status:Status, answers:Answer } = model;
 const _ = require('lodash');
 const utils = require('../lib/utils');
 const {
   userAttributes,
   articleAttributes,
   commentAttributes,
+  answerAttributes,
+  questionAttributes,
 } = require('../config/default')
 
 const articleInclude = [{
@@ -33,6 +35,36 @@ const articleInclude = [{
     as: 'author'
   }]
 }];
+
+const answerInclude = [{
+  model: model.users,
+  attributes: userAttributes,
+  as: 'author'
+}, {
+  model: model.questions,
+  attributes: questionAttributes,
+  as: 'question'
+}, {
+  model: model.status,
+  as: 'status',
+  where: {
+    targetType: 2,
+  },
+}, {
+  model: model.comments,
+  attributes: commentAttributes,
+  as: 'comment',
+  required: false,
+  where: {
+    targetType: 2,
+  },
+  required: false,
+  include: [{
+    model: model.users,
+    attributes: userAttributes,
+    as: 'author'
+  }]
+}]
 
 const creatorArticles = async (ctx, next) => {
   const { creatorId } = ctx.query;
@@ -153,12 +185,17 @@ const getArticleList = async (ctx, next) => {
       include: articleInclude,
       attributes: articleAttributes,
     });
+    const answerList = await Answer.findAll({
+      order,
+      limit,
+      include: answerInclude,
+      attributes: answerAttributes,
+    })
     ctx.response.body = {
       status: 200,
-      list: articleList,
+      list: _.shuffle(articleList.concat(answerList)),
     }
   } catch (error) {
-    console.log(error);
     utils.catchError(ctx, error);
   }
 }

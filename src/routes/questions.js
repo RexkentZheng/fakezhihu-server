@@ -160,6 +160,7 @@ const getQuestion = async (ctx, next) => {        //  分开查询，易修改�
       attributes: commentAttributes
     })
     const finalData = questionContent;
+    console.log(finalData);
     finalData.dataValues.answerCount = answerList.count;
     finalData.dataValues.answer = answerList.rows;
     finalData.dataValues.commentCount = commentList.count;
@@ -175,7 +176,7 @@ const getQuestion = async (ctx, next) => {        //  分开查询，易修改�
 }
 
 const updateQuestions = async (ctx, next) => {
-  const { questionId, content, excerpt, title, userId } = ctx.request.body;
+  const { questionId, discription, excerpt, title, userId } = ctx.request.body;
   const where = {
     id: questionId,
     creatorId: userId
@@ -189,7 +190,7 @@ const updateQuestions = async (ctx, next) => {
       };
     } else {
       await Question.update({
-        discription: content,
+        discription,
         excerpt,
         title,
       }, {

@@ -30,8 +30,8 @@ const config = {
   "server": {
     "port": 9929
   },
-  "userAttributes": ['name', 'email', 'avatarUrl', 'headline'],
-  "commentAttributes": ['creatorId', 'content', 'targetId', 'createdAt'],
+  "userAttributes": ['id', 'name', 'email', 'avatarUrl', 'headline'],
+  "commentAttributes": ['id', 'type', 'creatorId', 'content', 'targetId', 'createdAt'],
   "articleAttributes": ['id', 'title', 'excerpt', 'content', 'cover', 'creatorId', 'type', 'updatedAt'],
   "questionAttributes": ['id', 'title', 'excerpt', 'discription', 'updatedAt', 
     // [sequelize.fn("COUNT", sequelize.fn('DISTINCT', sequelize.col('answer.id'))), "answerCount"],
