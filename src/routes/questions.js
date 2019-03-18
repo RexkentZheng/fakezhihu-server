@@ -112,7 +112,6 @@ const getQuestion = async (ctx, next) => {        //  分开查询，易修改�
     where: {
       targetType: 1,
     },
-    required: false,
   }, {
     model: model.answers,
     as: 'answer',
@@ -137,16 +136,12 @@ const getQuestion = async (ctx, next) => {        //  分开查询，易修改�
       where: {
         targetType: 2,
       },
-      include: [{
-        model: model.users,
-        attributes: userAttributes,
-        as: 'author'
-      }]
     }]
   }];
   try {
     const questionContent = await Question.findOne({
       where: questionWhere,
+      include: include,
       attributes: questionAttributes,
     });
     const answerList = await Answer.findAndCountAll({
@@ -159,15 +154,12 @@ const getQuestion = async (ctx, next) => {        //  分开查询，易修改�
       include: commentInclude,
       attributes: commentAttributes
     })
-    const finalData = questionContent;
-    console.log(finalData);
-    finalData.dataValues.answerCount = answerList.count;
-    finalData.dataValues.answer = answerList.rows;
-    finalData.dataValues.commentCount = commentList.count;
-    finalData.dataValues.comment = commentList.rows; 
+    // const finalData = questionContent;
+    // finalData.dataValues.answer = answerList.rows;
+    // finalData.dataValues.comment = commentList.rows; 
     ctx.response.body = {
       status: 200,
-      content: finalData,
+      content: questionContent,
     }
   } catch (error) {
     utils.catchError(error);
