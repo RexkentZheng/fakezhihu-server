@@ -21,7 +21,11 @@ const creatorQuestions = async (ctx, next) => {
   }, {
     model: model.comments,
     attributes: commentAttributes,
-    as: 'comment'
+    required: false,
+    as: 'comment',
+    where: {
+      targetType: 1,
+    },
   }];
   try {
     const list = await Question.findAll({
@@ -93,11 +97,6 @@ const getQuestion = async (ctx, next) => {        //  分开查询，易修改�
       targetType: 2,
     },
     required: false,      //  可以为空值，否则会互相过滤导致没有值返回
-    include: [{
-      model: model.users,
-      attributes: userAttributes,
-      as: 'author'
-    }]
   }];
   const include = [                    //  也可以这么查，不过代码不太好修改而已
     {

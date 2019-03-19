@@ -28,12 +28,6 @@ const articleInclude = [{
   where: {
     targetType: 0,
   },
-  required: false,
-  include: [{
-    model: model.users,
-    attributes: userAttributes,
-    as: 'author'
-  }]
 }];
 
 const answerInclude = [{
@@ -58,12 +52,6 @@ const answerInclude = [{
   where: {
     targetType: 2,
   },
-  required: false,
-  include: [{
-    model: model.users,
-    attributes: userAttributes,
-    as: 'author'
-  }]
 }]
 
 const creatorArticles = async (ctx, next) => {
