@@ -4,6 +4,7 @@ const CryptoJS = require('crypto-js');
 
 const upload = async (ctx, next) => {
   const file = ctx.request.files.file; // 获取上传文件
+  console.log(file);
   const hash = CryptoJS.MD5(file);    //  获取文件唯一的hash值d
   const reader = fs.createReadStream(file.path);  // 创建可读流
   let filePath = path.join(__dirname, '../../public/imgs') + `/${hash}.${file.name.split('.').pop()}`;  // 创建文件路径

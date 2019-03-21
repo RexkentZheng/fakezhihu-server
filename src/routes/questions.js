@@ -26,10 +26,20 @@ const creatorQuestions = async (ctx, next) => {
     where: {
       targetType: 1,
     },
+  }, {
+    model: model.answers,
+    attributes: answerAttributes,
+    required: false,
+    as: 'answer',
   }];
   try {
     const list = await Question.findAll({
-      where, include, attributes: questionNoAnswerAttributes
+      where,
+      include,
+      attributes: questionNoAnswerAttributes,
+      order: [
+        ['updatedAt', 'DESC'],
+      ],
     });
     ctx.response.status = 200;
     ctx.response.body = {

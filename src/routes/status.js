@@ -19,19 +19,17 @@ const updateStatus = async (ctx, next) => {
         changedOne.voteUp = JSON.stringify(_.pull(JSON.parse(changedOne.voteUp), value));
         changedOne.voteDown = JSON.stringify([...JSON.parse(changedOne.voteDown), value]);
       }
-      changedOne.save();
     } else {
       changedOne[colName] = opreation === 'pull'
         ? JSON.stringify(_.pull(JSON.parse(changedOne[colName]), value))
         : JSON.stringify([...JSON.parse(changedOne[colName]), value]);
-      changedOne.save();
     }
+    changedOne.save();
     ctx.response.body = {
       status: 201,
       content: changedOne,
     };
   } catch (error) {
-    console.log(error);
     utils.catchError(error);
   }
 };

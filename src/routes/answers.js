@@ -61,7 +61,12 @@ const creatorAnswer = async (ctx, next) => {
     attributes: userAttributes,
   }];
   await Answer.findAll({
-    where, include, attributes: answerAttributes,
+    where,
+    include,
+    attributes: answerAttributes,
+    order: [
+      ['updatedAt', 'DESC'],
+    ],
   }).then((res) => {
     ctx.response.body = {
       status: 200,
@@ -112,25 +117,17 @@ const updateAnswer = async (ctx, next) => {
     id: answerId,
   }
   try {
-    const answerExist = await Answer.findOne({ where });
-      if (!answerExist) {
-        ctx.response.body = {
-          status: 2001,
-          msg: '答案不存在或者没有权限'
-        };
-      } else {
-        await Answer.update({
-          content,
-          excerpt,
-        }, {
-          where
-        }).then((res) => {
-          ctx.response.body = {
-            status: 201,
-            msg: '答案修改成功'
-          };
-        });
-      }
+    await Answer.update({
+      content,
+      excerpt,
+    }, {
+      where
+    }).then((res) => {
+      ctx.response.body = {
+        status: 201,
+        msg: res
+      };
+    });
   } catch (error) {
     utils.catchError(error);
   }

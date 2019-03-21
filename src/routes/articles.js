@@ -64,6 +64,9 @@ const creatorArticles = async (ctx, next) => {
       where,
       include: articleInclude,
       attributes: articleAttributes,
+      order: [
+        ['updatedAt', 'DESC'],
+      ],
     });
     ctx.response.body = {
       status: 200,
@@ -202,27 +205,19 @@ const updateArticles = async (ctx, next) => {
     creatorId: userId
   };
   try {
-    const articleExist = await Article.findOne({where});
-    if (!articleExist) {
+    await Article.update({
+      content,
+      excerpt,
+      title,
+      cover: imgUrl,
+    }, {
+      where
+    }).then((res) => {
       ctx.response.body = {
-        status: 2001,
-        msg: '文章不存在或者没有权限'
+        status: 201,
+        msg: res,
       };
-    } else {
-      await Article.update({
-        content,
-        excerpt,
-        title,
-        cover: imgUrl,
-      }, {
-        where
-      }).then((res) => {
-        ctx.response.body = {
-          status: 201,
-          msg: '文章修改成功'
-        };
-      });
-    }
+    });
   } catch (error) {
     utils.catchError(error);
     ctx.resError = error;

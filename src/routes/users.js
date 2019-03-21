@@ -45,7 +45,7 @@ const createUser = async (ctx, next) => {
       return ;
     }
     await User.create({
-      name, pwd, email
+      name, pwd, email, avatarUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553742083&di=c2c2010478643fe830e3d65fd7b40b3b&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.qqzhi.com%2Fuploads%2F2018-12-27%2F021252965.jpg'
     }).then((res) => {
       ctx.response.status = 201;
       ctx.response.body = res;
@@ -129,11 +129,32 @@ const getUserInfo = async (ctx, next) => {
   });
 }
 
+const updateUserInfo = async (ctx, next) => {
+  const { id, colName, value } = ctx.request.body;
+  try {
+    await User.update({
+      [colName]: value,
+    }, {
+      where: {
+        id
+      }
+    }).then((res) => {
+      ctx.response.body = {
+        status: 201,
+        content: res
+      }
+    });
+  } catch (error) {
+    utils.catchError(error);
+  }
+}
+
 module.exports = {
   'GET /users/list' : list,
   'GET /users': getUserInfo,
   'GET /users/checkLogin': checkLogin,
   'POST /users/create': createUser,
   'POST /users/login': loginUser,
-  'POST /users/logout': logout
+  'POST /users/logout': logout,
+  'PUT /users': updateUserInfo,
 }
