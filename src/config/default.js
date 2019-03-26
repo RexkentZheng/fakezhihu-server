@@ -33,14 +33,9 @@ const config = {
   "userAttributes": ['id', 'name', 'email', 'avatarUrl', 'headline'],
   "commentAttributes": ['id', 'type', 'creatorId', 'content', 'targetId', 'createdAt'],
   "articleAttributes": ['id', 'title', 'excerpt', 'content', 'cover', 'creatorId', 'type', 'updatedAt'],
-  "questionAttributes": ['id', 'title', 'excerpt', 'discription', 'updatedAt', 
-    // [sequelize.fn("COUNT", sequelize.fn('DISTINCT', sequelize.col('answer.id'))), "answerCount"],
-    // [sequelize.fn("COUNT", sequelize.fn('DISTINCT', sequelize.col('comment.id'))), "commentCount"],
-  ],
+  "questionAttributes": ['id', 'title', 'excerpt', 'discription', 'updatedAt'],
   "questionNoAnswerAttributes": ['id', 'title', 'excerpt', 'discription', 'updatedAt'],
-  "answerAttributes": ['id', 'content', 'excerpt', 'creatorId', 'type', 'targetId', 'updatedAt'
-    // [sequelize.fn("COUNT", sequelize.col("comment.id")), "commentCount"],
-  ],
+  "answerAttributes": ['id', 'content', 'excerpt', 'creatorId', 'type', 'targetId', 'updatedAt'],
 };
 
 module.exports = config;

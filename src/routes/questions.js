@@ -6,7 +6,6 @@ const {
   questionAttributes,
   answerAttributes,
   commentAttributes,
-  questionNoAnswerAttributes
 } = require('../config/default')
 
 const creatorQuestions = async (ctx, next) => {
@@ -16,13 +15,13 @@ const creatorQuestions = async (ctx, next) => {
   };
   const include = [{
     model: model.users,
+    as: 'author',
     attributes: userAttributes,
-    as: 'author'
   }, {
     model: model.comments,
+    as: 'comment',
     attributes: commentAttributes,
     required: false,
-    as: 'comment',
     where: {
       targetType: 1,
     },
@@ -33,19 +32,19 @@ const creatorQuestions = async (ctx, next) => {
     as: 'answer',
   }];
   try {
-    const list = await Question.findAll({
+    await Question.findAll({
       where,
       include,
-      attributes: questionNoAnswerAttributes,
+      attributes: questionAttributes,
       order: [
         ['updatedAt', 'DESC'],
       ],
+    }).then((res) => {
+      ctx.response.body = {
+        status: 200,
+        list: res,
+      };
     });
-    ctx.response.status = 200;
-    ctx.response.body = {
-      status: 200,
-      list
-    };
   } catch (error) {
     utils.catchError(error);
   }

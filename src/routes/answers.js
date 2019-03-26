@@ -1,6 +1,6 @@
 const model = require('../models');
 const { answers:Answer, status:Status } = model;
-const { userAttributes, answerAttributes, commentAttributes } = require('../config/default')
+const { userAttributes, answerAttributes, commentAttributes, questionAttributes } = require('../config/default')
 const _ = require('lodash');
 const utils = require('../lib/utils');
 
@@ -55,24 +55,29 @@ const creatorAnswer = async (ctx, next) => {
   }, {
     model: model.questions,
     as: 'question',
+    attributes: questionAttributes,
   }, {
     model: model.users,
     as: 'author',
     attributes: userAttributes,
   }];
-  await Answer.findAll({
-    where,
-    include,
-    attributes: answerAttributes,
-    order: [
-      ['updatedAt', 'DESC'],
-    ],
-  }).then((res) => {
-    ctx.response.body = {
-      status: 200,
-      list: res,
-    };
-  });
+  try {
+    await Answer.findAll({
+      where,
+      include,
+      attributes: answerAttributes,
+      order: [
+        ['updatedAt', 'DESC'],
+      ],
+    }).then((res) => {
+      ctx.response.body = {
+        status: 200,
+        list: res,
+      };
+    });
+  } catch (error) {
+    utils.catchError(error);
+  }
 }
 
 const deleteAnswers = async (ctx, next) => {

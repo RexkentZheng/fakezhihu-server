@@ -60,18 +60,19 @@ const creatorArticles = async (ctx, next) => {
     creatorId
   };
   try {
-    const list = await Article.findAll({
+    await Article.findAll({
       where,
       include: articleInclude,
       attributes: articleAttributes,
       order: [
         ['updatedAt', 'DESC'],
       ],
+    }).then((res) => {
+      ctx.response.body = {
+        status: 200,
+        list: res,
+      };
     });
-    ctx.response.body = {
-      status: 200,
-      list,
-    };
   } catch (error) {
     utils.catchError(error);
   }
