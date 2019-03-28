@@ -1,14 +1,13 @@
-const model = require('../models');
-const sequelize = require('sequelize');
-
 const config = {
   "db": {
     "database": "fakezhihu",
     "username": "origin",
     "password": "104.225.232.232-dzvpn-origin",
+    // "password": "fakezhihu",
     "options": {
       "dialect": "mysql",
       "host": "104.225.232.232",
+      // "host": "127.0.0.1",
       "port": 3306,
       "operatorsAliases": false,
       "define": {
