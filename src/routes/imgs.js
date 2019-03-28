@@ -13,6 +13,7 @@ const upload = async (ctx, next) => {
   ctx.body = {
     status: 201,
     url: filePath,
+    fileName: `${hash}.${file.name.split('.').pop()}`,
   };
 };
 
