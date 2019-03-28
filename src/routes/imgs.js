@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const CryptoJS = require('crypto-js');
+const moment = require('moment');
 
 const upload = async (ctx, next) => {
   const file = ctx.request.files.file; // 获取上传文件
-  console.log(file);
-  const hash = CryptoJS.MD5(file);    //  获取文件唯一的hash值d
+  const hash = CryptoJS.MD5(`${file.path}_${moment()}`);    //  获取文件唯一的hash值d
   const reader = fs.createReadStream(file.path);  // 创建可读流
   let filePath = path.join(__dirname, '../../public/images') + `/${hash}.${file.name.split('.').pop()}`;  // 创建文件路径
   const upStream = fs.createWriteStream(filePath);  // 创建可写流
