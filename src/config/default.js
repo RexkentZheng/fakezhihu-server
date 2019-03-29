@@ -1,7 +1,8 @@
 const config = {
   "db": {
     "database": "fakezhihu",
-    "username": "root",
+    // "username": "root",
+    "username": "origin",
     "password": "104.225.232.232-dzvpn-origin",
     // "password": "fakezhihu",
     "options": {
