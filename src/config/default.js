@@ -1,14 +1,11 @@
 const config = {
   "db": {
     "database": "fakezhihu",
-    // "username": "root",
-    "username": "origin",
-    "password": "104.225.232.232-dzvpn-origin",
-    // "password": "fakezhihu",
+    "username": "root",
+    "password": "fakezhihu",
     "options": {
       "dialect": "mysql",
-      "host": "104.225.232.232",
-      // "host": "127.0.0.1",
+      "host": "127.0.0.1",
       "port": 3306,
       "operatorsAliases": false,
       "define": {
@@ -34,7 +31,6 @@ const config = {
   "commentAttributes": ['id', 'type', 'creatorId', 'content', 'targetId', 'createdAt'],
   "articleAttributes": ['id', 'title', 'excerpt', 'content', 'cover', 'creatorId', 'type', 'updatedAt'],
   "questionAttributes": ['id', 'title', 'excerpt', 'discription', 'updatedAt'],
-  "questionNoAnswerAttributes": ['id', 'title', 'excerpt', 'discription', 'updatedAt'],
   "answerAttributes": ['id', 'content', 'excerpt', 'creatorId', 'type', 'targetId', 'updatedAt'],
 };
 

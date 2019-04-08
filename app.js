@@ -43,7 +43,7 @@ app.on('error', (err, ctx) => {
 });
 
 console.log('==============================================================');
-console.log(' DZ-VPN Subserver');
+console.log(' Fakezhihu-server');
 console.log('--------------------------------------------------------------');
 console.log(' Start prot : 8081 ')
 console.log(` Up time: ${new Date().toString()}`);
